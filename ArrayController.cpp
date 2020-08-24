@@ -57,7 +57,7 @@
 
 
 
-	//Getters for the memory, disgusting block of code by oh well probably should be reworked to remove duplication
+	//Getters for the memory, disgusting block of code but oh well probably should be reworked to remove duplication
 
 	std::vector<int> GetGyroMemoryX()
 	{
