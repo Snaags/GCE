@@ -1,18 +1,10 @@
-#include "functions.h"
-#include "ArrayController.h"
+#include <functions.h>
+#include <ArrayController.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-#include <vector>
 
-void Plotter(std::vector<int> array)
-{
-	for(int i = 0; i < array.size();i++)
-	{
-		Serial.println(array[i])
-	}
 
-}
 
 void setup() 
 {
@@ -88,9 +80,7 @@ void loop()
 	//Adds most recent sensor readings to the memory arrays
 	memoryArray.ArrayControllerUpdate(a,g);
 
-
+	//add comment
 	
 	
 }
-
-
