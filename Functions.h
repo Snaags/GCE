@@ -3,8 +3,12 @@
 
 	//Array management
 
-	void ArrayControllerInit(Adafruit_MPU6050& mpu);
 
-	void ArrayControllerUpdate(Adafruit_MPU6050& mpu);
 
 	bool ShotDetector();
+
+	void Plotter(std::vector<int> array)
+	{
+		for(int i = 0; i < array.size())
+
+	}
