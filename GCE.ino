@@ -1,18 +1,15 @@
-#include <functions.h>
-#include <ArrayController.h>
+
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-
-
-
+#include "ArrayController.h"
+//#include "Functions.h"
+Adafruit_MPU6050 mpu;
+ArrayController memoryArray;
+int counter  = 0;
 void setup() 
 {
 	// put your setup code here, to run once:
-	
-	Adafruit_MPU6050 mpu;
-
-
 
 	/////////////////////////////////////////////
 	//
@@ -57,11 +54,12 @@ void setup()
 
 
 
-
+  sensors_event_t a;
+  sensors_event_t g;
 	//Creates Memory array object
-	ArrayController memoryArray;
+
 	//Initializes the memory array based on the sample frequency of the gyro chip
-	memoryArray.ArrayControllerInit(mpu);
+	memoryArray.ArrayControllerInit();
 
 }
 
@@ -72,15 +70,28 @@ void loop()
 {
   // put your main code here, to run repeatedly:
 
-
  	 /* Get new sensor events with the readings */
-  	sensors_event_t a, g;
- 	mpu.getEvent(&a, &g);
+  	sensors_event_t a, g, t;
+ 	mpu.getEvent(&a, &g, &t);
 
 	//Adds most recent sensor readings to the memory arrays
 	memoryArray.ArrayControllerUpdate(a,g);
+	delay(10);
 
-	//add comment
+	if (ShotDetector() == true)
+	{
+
+		float* pArray = memoryArray.GetAccelMemoryY();
+		
+		CorrectOrientation(pArray);
+
+		int * pShots = ConvertToShot(pArray);
+
+		delete[] pArray;
+	}
+
+
+
 	
 	
 }

@@ -1,55 +1,59 @@
 #include "ArrayController.h" 
 
-	void ArrayControllerInit(Adafruit_MPU6050& mpu )
+	void ArrayController::ArrayControllerInit()
 	{
-		//calculate the sample frequency
-		int sampleFrequency = (mpu.getCycleRate / mpu.getSampleRateDivisor);
-		int sampleRate = 1/sampleFrequency * 1000 // in miliseconds
+
 
 
 		//Define size and allocate array (Currently allocating for 1 second);
 
-		GyroMemoryZ.resize(sampleFrequency);
-		GyroMemoryY.resize(sampleFrequency);
-		GyroMemoryX.resize(sampleFrequency);
+		for (int i = 0 ; i < arraysize; i++)
+		{
 
-		AccelMemoryX.resize(sampleFrequency);
-		AccelMemoryY.resize(sampleFrequency);
-		AccelMemoryZ.resize(sampleFrequency);
+			GyroMemoryZ [i] = 0 ;
+			GyroMemoryY [i] = 0 ;
+			GyroMemoryX [i] = 0 ;
+
+			AccelMemoryX [i] = 0 ;
+			AccelMemoryY [i] = 0 ;
+			AccelMemoryZ [i] = 0 ;
+
+		}
 
 	}
 
 
-	void ArrayControllerUpdate(sensors_event_t a, g)
+	void ArrayController::ArrayControllerUpdate(sensors_event_t a,sensors_event_t g)
 	{
 		//Take readings from mpu for all 6 DoF at each timestep
 
 				//Gyro
 
-		GyroMemoryX[GyroMemoryDivider] = g.gyro.x;
-		GyroMemoryY[GyroMemoryDivider] = g.gyro.y;
-		GyroMemoryZ[GyroMemoryDivider] = g.gyro.z;
+		GyroMemoryX[MemoryDivider] = g.gyro.x;
+		GyroMemoryY[MemoryDivider] = g.gyro.y;
+		GyroMemoryZ[MemoryDivider] = g.gyro.z;
 
-		GyroMemoryDivider++;
 
 				//Accelerometer
 
-		AccelMemoryX[AccelMemoryDivider] = a.Acceleration.x;
-		AccelMemoryY[AccelMemoryDivider] = a.Acceleration.y;
-		AccelMemoryZ[AccelMemoryDivider] = a.Acceleration.z;
+		AccelMemoryX[MemoryDivider] = a.acceleration.x;
+		AccelMemoryY[MemoryDivider] = a.acceleration.y;
+		AccelMemoryZ[MemoryDivider] = a.acceleration.z;
 
-		AccelMemoryDivider++;
+
+
+		MemoryDivider++;
 
 
 		//Loops the divider back to start of array when it reaches the end;
-		if(GyroMemoryDivider > GyroMemoryX.size())
+		if(MemoryDivider > arraysize)
 		{
-			GyroMemoryDivider = 0;	
+			MemoryDivider = 0;	
 		}
 
-		if(AccelMemoryDivider > AccelMemoryX.size())
+		if(MemoryDivider > arraysize)
 		{
-			AccelMemoryDivider = 0;	
+			MemoryDivider = 0;	
 		}
 		
 
@@ -57,129 +61,62 @@
 
 
 
-	//Getters for the memory, disgusting block of code but oh well probably should be reworked to remove duplication
+	//Getters for the memory, disgusting block of code but oh well, probably should be reworked to remove duplication
 
-	std::vector<int> GetGyroMemoryX()
+	float* ArrayController::getArray(float* array)
 	{
-		std::vector<int> v;
-		v.resize(GyroMemoryX.size())
+
+		//Dynamic memory allocation!!! Remember to deallocate!!!///////////////////////////////////////
+		float * v = new float[arraysize];
+		
 		int counter = 0;
-		for(int i = GyroMemoryDivider; i < GyroMemoryX.size();i++)
+
+		for(int i = MemoryDivider; i < arraysize;i++)
 		{
-			v[counter] = GyroMemoryX[i];
+			v[counter] = array[i];
+			counter++;
 
 		}
 
 
-		for(int i = 0; i < GyroMemoryDivider; i++)
+		for(int i = 0; i < MemoryDivider; i++)
 		{
-			v[counter] = GyroMemoryX[i];
-
-		}
-		return v
-
-	}
-	std::vector<int> GetGyroMemoryY()
-	{
-		std::vector<int> v;
-		v.resize(GyroMemoryY.size())
-		int counter = 0;
-		for(int i = GyroMemoryDivider; i < GyroMemoryY.size();i++)
-		{
-			v[counter] = GyroMemoryY[i];
-
-		}
-
-
-		for(int i = 0; i < GyroMemoryDivider; i++)
-		{
-			v[counter] = GyroMemoryY[i];
-
-		}
-		return v
-
-	}
-	std::vector<int> GetGyroMemoryZ()
-	{
-		std::vector<int> v;
-		v.resize(GyroMemoryZ.size())
-		int counter = 0;
-		for(int i = GyroMemoryDivider; i < GyroMemoryZ.size();i++)
-		{
-			v[counter] = GyroMemoryZ[i];
-
-		}
-
-
-		for(int i = 0; i < GyroMemoryDivider; i++)
-		{
-			v[counter] = GyroMemoryZ[i];
-
-		}
-		return v
-
-	}
-
-	std::vector<int> GetAccelMemoryX()
-	{
-		std::vector<int> v;
-		v.resize(AccelMemoryX.size())
-		int counter = 0;
-		for(int i = AccelMemoryDivider; i < AccelMemoryX.size();i++)
-		{
-			v[counter] = AccelMemoryX[i];
-
-		}
-
-
-		for(int i = 0; i < AccelMemoryDivider; i++)
-		{
-			v[counter] = AccelMemoryX[i];
-
-		}
-		return v;
-
-	}
-	std::vector<int> GetAccelMemoryY()
-	{
-		std::vector<int> v;
-		v.resize(AccelMemoryY.size())
-		int counter = 0;
-		for(int i = AccelMemoryDivider; i < AccelMemoryY.size();i++)
-		{
-			v[counter] = AccelMemoryY[i];
-
-		}
-
-
-		for(int i = 0; i < AccelMemoryDivider; i++)
-		{
-			v[counter] = AccelMemoryY[i];
+			v[counter] = array[i];
+			counter++;
 
 		}
 
 		return v;
-
 	}
-	std::vector<int> GetAccelMemoryZ()
+
+
+	float* ArrayController::GetGyroMemoryX()
 	{
-		std::vector<int> v;
-		v.resize(AccelMemoryZ.size())
-		int counter = 0;
-		for(int i = AccelMemoryDivider; i < AccelMemoryZ.size();i++)
-		{
-			v[counter] = AccelMemoryZ[i];
+		return getArray(GyroMemoryX);
+	}
 
-		}
+	float* ArrayController::GetGyroMemoryY()
+	{
+		return getArray(GyroMemoryY);
+	}
 
+	float* ArrayController::GetGyroMemoryZ()
+	{
+		return getArray(GyroMemoryZ);
+	}
 
-		for(int i = 0; i < AccelMemoryDivider; i++)
-		{
-			v[counter] = AccelMemoryZ[i];
+	float* ArrayController::GetAccelMemoryX()
+	{
+		return getArray(AccelMemoryX);
+	}
 
-		}
+	float* ArrayController::GetAccelMemoryY()
+	{
+		return getArray(AccelMemoryY);		
+	}
 
-		return v;
-
+	float* ArrayController::GetAccelMemoryZ()
+	{
+		return getArray(AccelMemoryZ);	
 	}
 

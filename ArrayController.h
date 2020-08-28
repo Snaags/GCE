@@ -1,39 +1,44 @@
 #pragma once
-#include <vector>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
 
 class ArrayController
 {
 
+private: 
+	static const int arraysize = 25;
 public:
 
-	void ArrayControllerInit(Adafruit_MPU6050& mpu);
+	void ArrayControllerInit();
 
-	void ArrayControllerUpdate(sensors_event_t a, g);
+	void ArrayControllerUpdate(sensors_event_t a,sensors_event_t g);
 
-	std::vector<int> GetGyroMemoryX();
-	std::vector<int> GetGyroMemoryY();
-	std::vector<int> GetGyroMemoryZ();
+	float* GetGyroMemoryX();
+	float* GetGyroMemoryY();
+	float* GetGyroMemoryZ();
 
-	std::vector<int> GetAccelMemoryX();
-	std::vector<int> GetAccelMemoryY();
-	std::vector<int> GetAccelMemoryZ();
+	float* GetAccelMemoryX();
+	float* GetAccelMemoryY();
+	float* GetAccelMemoryZ();
 
+	float* getArray(float* array);
 
 
 
 
 private:
 
-		std::vector<int> GyroMemoryX;
-		std::vector<int> GyroMemoryY;
-		std::vector<int> GyroMemoryZ;
 
-		std::vector<int> AccelMemoryX;
-		std::vector<int> AccelMemoryY;
-		std::vector<int> AccelMemoryZ;
+		float GyroMemoryX[arraysize];
+		float GyroMemoryY[arraysize];
+		float GyroMemoryZ[arraysize];
 
-		int GyroMemoryDivider = 0;
-		int AccelMemoryDivider = 0;
+		float AccelMemoryX[arraysize];
+		float AccelMemoryY[arraysize];
+		float AccelMemoryZ[arraysize];
+
+		int MemoryDivider = 0;
+
 
 
 };
