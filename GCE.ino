@@ -2,6 +2,7 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
+#include "MemoryFree.h"
 #include "ArrayController.h"
 //#include "Functions.h"
 Adafruit_MPU6050 mpu;
@@ -18,7 +19,7 @@ void setup()
 	/////////////////////////////////////////////
 
 
-	Serial.begin(115200);
+	Serial.begin(9600);
 	while (!Serial)
 		delay(10); // will pause Zero, Leonardo, etc until serial console opens
 
@@ -60,7 +61,7 @@ void setup()
 
 	//Initializes the memory array based on the sample frequency of the gyro chip
 	memoryArray.ArrayControllerInit();
-
+	int counter = 0;
 }
 
 
@@ -76,8 +77,41 @@ void loop()
 
 	//Adds most recent sensor readings to the memory arrays
 	memoryArray.ArrayControllerUpdate(a,g);
-	delay(10);
+	delay(2);
 
+	if(Serial.available()> 0)
+	{
+ 		char data = Serial.read();
+ 		Serial.println(data);
+	}
+	delay(50);
+
+	
+	if (counter > 24)
+	{
+
+		float* pArray = memoryArray.GetAccelMemoryY();
+		
+
+		//int * pShots = ConvertToShot(pArray);
+
+		
+
+		for(int i = 0; i < 24; i++)
+		{
+			Serial.println("Y: ");
+			Serial.println(pArray[i]);
+
+		}
+		delete[] pArray;
+
+
+		counter = 0;
+	}
+	
+	counter++;
+
+	/*
 	if (ShotDetector() == true)
 	{
 
@@ -89,6 +123,7 @@ void loop()
 
 		delete[] pArray;
 	}
+	*/
 
 
 
